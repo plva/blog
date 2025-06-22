@@ -45,6 +45,7 @@ If your "Mythical Man Month", "This is just Waterfall repackaged" spidey sense i
 If that still doesn't convince you, tell me this: what's the difference between a sprint plan and a waterfall SDLC? Aren't they mostly the same other than scope and time bounds? I don't think it's far fetched to presume we'll soon have agents completing a sprint's worth of stories in a single day. In fact, I'd even argue we're already there (if we're talking junior level SEs), it just doesn't quite feel like it because the bottleneck is still the human reviewer who needs to see if the models haven't suddenly turned to cats that need herding.
 
 I can't quite pin my finger on it, but it really does feel like design up front is the sensible approach to AI-agent-based software development, at least in the near term future. I'm sure they'll eventually adopt an agile mindset, but agile doesn't quite seem to work without some weather-worn lead gently steering the juniors to sensible sprints.
+
 ---
 
 ## The design backlog in outline
@@ -67,6 +68,7 @@ When picking tools, we choose speed over familiarity and write architecture deci
 This last part may seem counterintuitive: if we tighten constraints later, doesn't that mean we'll have a ton of refactoring to do? This is a little speculative at this point, but I'm looking at this as some sort of meta-level transaction log, where we have some fuzzy actions that we can replay on our repo as commands given to agents to implement. This is every newly-onboarded developers dream: nuke the repo and start from scratch. While this doesn't make sense from a cost/benefit perspective when it comes to human developers, my intuition says that the speed and costs of using AI-agents means there's a phase-shift of what problems can be "started from scratch", even at the level of an entire codebase. Remember, we have the commit history that we can replay as context for prompts... so its really X + Y + delta (where delta is something like "tighter security bounds"), and we already have X and Y, rather than X + Z where Z is something new the agent has to figure out from scratch.
 
 My intuition says that if we start too strict, since LLMs are trained on already existing code, and most of that code is not yet strict, they won't give robust solutions. If we are trying to have the model follow some valley of embedding-space battle-tested solutions, that'll only happen if there were enough of those in its training set. A similar intuition guides the need for the agent to write clean, well-formatted code: since most "good" developers write clean, well-organized code, when we force the agent to do the same, it will have to give answers coming from that region of its embedded space. Maybe my intuition is off since I don't quite understand the way LLMs work, but this seems sensible to me. Please let me know if that makes sense.
+
 ---
 
 ## Advice if you try this
