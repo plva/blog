@@ -4,7 +4,7 @@
 
 ## A quieter day after a noisy week
 
-My first attempt followed the "move fast, fix later" playbook. Codex and Cursor issued roughly fifty pull requests in a blur of green check-marks—until everything slowed. The agents stopped recognising their own conventions; the domain language still lived only in my head. Untangling migrations became the main occupation and progress stalled.
+My first attempt followed the "move fast, fix later" playbook. Codex and Cursor issued roughly fifty pull requests in a blur of green check-marks—until everything slowed. The agents stopped recognising their own conventions; the domain language still lived only in my head. Progress soon felt like herding cats: each agent wandered off its own convention, and keeping them all in line took more effort than writing new features.
 
 So I tried the opposite experiment. I blocked off a single, focused day to design—no feature code, just structure. By the end of that day I had drafted more than forty Architecture Decision Records and a dependency-ordered backlog ready for parallel implementation. The design won't solve every future problem, but it should stop early velocity from sinking into a swamp.
 
@@ -14,11 +14,7 @@ I share this because many teams have reported the same arc: early AI excitement,
 
 ## Why plan first?
 
-Speed remains the goal; now I treat it as something earned by clearing friction from the loops that run most often.
-
-* **Commit loops.** Pre-commit checks run in under a second, so an agent knows immediately when it violates style or types—no "push, wait, scroll logs" dance.
-* **Release loops.** Semantic-release bumps versions and rewrites the changelog in a single pass; humans review value, not version strings.
-* **Security loops.** Gitleaks, Bandit, CodeQL, and Trivy run as early as practical. These tools are seatbelts and airbags, not autopilot—human review and incident drills stay on the calendar.
+Speed remains the goal; but I think we are realizing it is something earned by clearing friction from the loops that run most often, rather than a free AI-gimmie. There's no use driving a fast car if you can't keep it from crashing into traffic.
 
 The guiding question was always, *"Will this choice lower the long-term cost of secure, maintainable speed?"* A tool that saves fifteen seconds on every CI run but takes a day to debug once a year is worth it. One that saves a minute today but adds uncertainty six months out usually is not.
 
@@ -38,16 +34,17 @@ The guiding question was always, *"Will this choice lower the long-term cost of 
 * **Release loops** package, tag, and document in one motion.
 * **Security loops** surface issues early; guard-rails let agents run unattended while humans handle nuance.
 
-Security still needs people. Guard-rails lock the obvious doors, but they don’t watch the hallway. We still review sensitive PRs, rotate keys, scan logs, patch base images, and rehearse incident drills. Automation just clears the routine checks so humans—and higher-level agents—can look for the subtle issues a static scan will miss.
-
-If that feels like too much work on day one, consider the clock speed of agents. They push code around the clock, so a missing guard-rail can hurt days or weeks earlier than it would on a human-only team. A few hours of wiring now beats a long stretch of future damage control.
+If that feels like too much work on day one, consider the clock speed of agents. They push code around the clock, so a missing guard-rail can hurt days or weeks earlier than it would on a human-only team. A few hours of wiring now beats a long stretch of future damage control. What's costly and difficult to set up in a greenfield project is often unaffordable in a mature code-base (so at that point you're usually stuck with what you've got because of the negative tradeoff between risk/benefit).
 
 ---
 
 ### Design-up-front is not Waterfall 2.0
 
-Classic waterfall assumed long spec cycles and expensive change. **Waterfall + Agents feels different:** agents iterate continuously, but they need clear, deterministic rules to stay within bounds. We lay the rails first, then let the train run. It is still "move fast," just not "move fast and hope." Or, borrowing SpaceX's phrasing: *move fast and break staging, not production.*
+If your "Mythical Man Month", "This is just Waterfall repackaged" spidey sense is tingling, you're technically not wrong. However, classic waterfall assumed long spec cycles and expensive change. **Waterfall + Agents feels different:** agents iterate continuously, but they need clear, deterministic rules to stay within bounds. We lay the rails first, then let the train run. It is still "move fast," just not "move fast and hope." Or, borrowing SpaceX's phrasing: *move fast and break staging, not production.*
 
+If that still doesn't convince you, tell me this: what's the difference between a sprint plan and a waterfall SDLC? Aren't they mostly the same other than scope and time bounds? I don't think it's far fetched to presume we'll soon have agents completing a sprint's worth of stories in a single day. In fact, I'd even argue we're already there (if we're talking junior level SEs), it just doesn't quite feel like it because the bottleneck is still the human reviewer who needs to see if the models haven't suddenly turned to cats that need herding.
+
+I can't quite pin my finger on it, but it really does feel like design up front is the sensible approach to AI-agent-based software development, at least in the near term future. I'm sure they'll eventually adopt an agile mindset, but agile doesn't quite seem to work without some weather-worn lead gently steering the juniors to sensible sprints.
 ---
 
 ## The design backlog in outline
@@ -65,8 +62,11 @@ Classic waterfall assumed long spec cycles and expensive change. **Waterfall + A
 
 ## Trade-off heuristics
 
-Speed over familiarity; write ADRs for low lock-in; keep a single source of truth for each concept; start permissive, tighten later.
+When picking tools, we choose speed over familiarity and write architecture decision records (ADRs) for low lock-in. We keep a single source of truth for each concept rather than distributing conventions implictly all over the code base (that's hard for agents to follow, at least for now). We aim for tunability: start permissive, tighten later as needed. 
 
+This last part may seem counterintuitive: if we tighten constraints later, doesn't that mean we'll have a ton of refactoring to do? This is a little speculative at this point, but I'm looking at this as some sort of meta-level transaction log, where we have some fuzzy actions that we can replay on our repo as commands given to agents to implement. This is every newly-onboarded developers dream: nuke the repo and start from scratch. While this doesn't make sense from a cost/benefit perspective when it comes to human developers, my intuition says that the speed and costs of using AI-agents means there's a phase-shift of what problems can be "started from scratch", even at the level of an entire codebase. Remember, we have the commit history that we can replay as context for prompts... so its really X + Y + delta (where delta is something like "tighter security bounds"), and we already have X and Y, rather than X + Z where Z is something new the agent has to figure out from scratch.
+
+My intuition says that if we start too strict, since LLMs are trained on already existing code, and most of that code is not yet strict, they won't give robust solutions. If we are trying to have the model follow some valley of embedding-space battle-tested solutions, that'll only happen if there were enough of those in its training set. A similar intuition guides the need for the agent to write clean, well-formatted code: since most "good" developers write clean, well-organized code, when we force the agent to do the same, it will have to give answers coming from that region of its embedded space. Maybe my intuition is off since I don't quite understand the way LLMs work, but this seems sensible to me. Please let me know if that makes sense.
 ---
 
 ## Advice if you try this
