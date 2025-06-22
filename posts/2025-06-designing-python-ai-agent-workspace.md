@@ -83,11 +83,27 @@ Use a template as an idea checklist, not a blueprint. Ask whether each tool will
 
 Designing the rails was work, but also satisfying. Seeing messy parts click into place made the effort feel worthwhile—and necessary.
 
----
+### “Isn’t this a bit… much?”
+
+You might be wondering why I bothered with forty-odd decision records when there is no product, no MVP, no POC—no **GPT**-“Great Prototype, Trust me.” Conventional wisdom says start with a linter, a formatter, maybe a test runner, and add the fancy parts later. That advice is sensible for a weekend side project or a proof of concept that will be thrown away on Monday.
+
+The calculation changes when you want a production-grade system that will be touched by autonomous agents. Agents do not pace themselves the way people do. They can open ten pull requests before lunch, and if each one introduces a tiny inconsistency or an unpatched dependency, the compound interest on that tech debt arrives overnight. Guard-rails that feel like luxury options on a human-only project become basic seatbelts the moment you hand the steering wheel to a model.
+
+The same argument even applies to smaller, “toy” projects once an agent is involved. A model may generate code that looks clean, but it cannot yet guarantee that a dependency is free of known CVEs or that a commit message follows any convention your release tooling can understand. Lacking those signals, your CI pipeline either blocks useful work or waves through latent bugs. Automating the checks from day one short-circuits that dilemma.
+
+Sceptics will say this is all conjecture: maybe future foundation models will embed secure defaults, maybe they will write perfect commit messages. That may happen, but it is not true today, and every headline about a leaked key or supply-chain breach reminds me that “maybe” is not a release plan. The safer bet is to wire proven practices into the toolchain, then let the models run inside that frame.
+
+Could the extra design still be wasted effort? Possibly. Yet the cost is a single day up front, and the upside is months of smoother velocity. I would rather discover I over-planned than find out fifty pull requests in that I need to pause development to retrofit security scans, release gates, and documentation generators (since its gotten too complex for an AI agent to do in one shot).
+
+Push-back is welcome. Your team, domain, or language model might thrive with less structure; the right balance is always a local trade-off that depends on your stack, use-case, and crew. That is why every choice lives in an ADR: the reasoning is captured, so revisiting a decision is a pull request— not an archaeological dig. If a guard-rail later feels heavy, we can loosen or remove it without tearing up the track. Until then, I prefer to aim a little over-secure rather than discover, mid-sprint, that the safety net is too thin.
+
+Security, style, and architecture cut across the entire codebase; fixing them after launch means large, risky refactors that rarely clear the cost-benefit bar. Our grandparents were right: a stitch in time really does save nine.
+
+And if super-intelligent machines eventually descend to refactor the project from orbit, at least they’ll land on clear decisions, automated safeguards, and a clean release history—a small professional courtesy for our future silicon colleagues.
 
 ### Appendix – Implementation Roadmap
 
-Below is the first layer of stories, grouped by dependency. Each bullet notes why it matters.
+In case you're curious, below is the first layer of stories, grouped mostly by dependency and importance order. Each bullet notes why it matters.
 
 * **1 – ADR Process** – every foundational decision gets an ADR.
 * **2 – Bootstrap with `uv`** – reproducible environment in one command.
